@@ -20,4 +20,5 @@ RUN wget https://nodejs.org/dist/v10.16.0/node-v10.16.0.tar.gz; \
     make; \
     make install; \
     rm ../node-v10.16.0.tar.gz;
+RUN npm install -g @angular/cli@9.1.7
 ENTRYPOINT ["/startup.sh"]
