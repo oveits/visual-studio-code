@@ -1,0 +1,94 @@
+---
+# TODO: add namespace visual-studio-code
+#
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visual-studio-code
+  # TODO: add next line, after namespace visual-studio-code is installed
+  #namespace: visual-studio-code
+  labels:
+    app: visual-studio-code
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visual-studio-code
+  template:
+    metadata:
+      labels:
+        app: visual-studio-code
+    spec:
+      containers:
+      - name: visual-studio-code
+#        image: beneventsur/visual-studio-code:1.34.0-nodejs-v10.16.0
+        image: vocon/visual-studio-code
+        env:
+        - name: WIDTH
+          value: "1920"
+        - name: HEIGHT
+          value: "1080"
+        - name: PASSWORD
+          value: "8345682346378"
+        ports:
+        - containerPort: 6080
+          hostPort: 6902
+          name: browser
+        - containerPort: 5901
+          hostPort: 5902
+          name: vnc
+        volumeMounts:
+        - mountPath: /home/centos
+          name: home-volume
+        - mountPath: /headless/.vocloud
+          name: vocloud-volume
+        - mountPath: /headless/.IdeaIC2019.3
+          name: idea-config-volume
+        - mountPath: /headless/.local
+          name: idea-local-volume
+        - mountPath: /headless/git
+          name: git-volume
+        - mountPath: /headless/.java
+          name: java-config
+        - mountPath: /headless/.m2
+          name: maven-config
+        - mountPath: /headless/.ssh
+          name: dot-ssh
+#        command: ["/entrypoint_vnc_startup.sh", "/entrypoint_post_vnc_startup.sh"]
+#        args: ["/bin/bash", "-c", "ln -s /home/centos/.gitconfig /headless/.gitconfig; while true; do echo keepalive; sleep 3600; done"]
+      volumes:
+      - name: home-volume
+        hostPath:
+          path: /home/centos
+          type: Directory
+      - name: vocloud-volume
+        hostPath:
+          path: /home/centos/.vocloud
+          type: Directory
+      - name: idea-config-volume
+        hostPath:
+          path: /home/centos/.vocloud/.IdeaIC2019.3
+          type: Directory
+      - name: idea-local-volume
+        hostPath:
+          path: /home/centos/.vocloud/.local
+          type: Directory
+      - name: git-volume
+        hostPath:
+          path: /home/centos/git
+          type: Directory
+      - name: java-config
+        hostPath:
+          path: /home/centos/.vocloud/.java
+          type: Directory
+      - name: maven-config
+        hostPath:
+          path: /home/centos/.vocloud/.m2
+          type: Directory
+      - name: dot-ssh
+        hostPath:
+          path: /home/centos/.ssh
+          type: Directory
+#        persistentVolumeClaim:
+#          claimName: visual-studio-code-claim
