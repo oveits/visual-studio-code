@@ -13,4 +13,11 @@ COPY ./noVNC/ /noVNC/
 COPY ./startup.sh /startup.sh
 RUN chmod 777 /startup.sh; \
     chmod 777 -R /noVNC
+
+RUN npm install -g @angular/cli@9.1.7
+
+RUN groupadd usergroup -g 1000 \
+    && useradd -m user-u 1000 -g 1000 -d /home/user
+# RUN mkdir -p /root/.m2 && chown $MYUSER:$MYGROUP -R /root
+
 ENTRYPOINT ["/startup.sh"]
