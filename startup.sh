@@ -7,17 +7,38 @@ REMOTE_VNC=${REMOTE_VNC:=true}
 [ "$REMOTE_VNC" != "true" ] && echo "$VNC_ARGS" | grep -q -v localhost && VNC_ARGS="-localhost $VNC_ARGS"
 
 # set VNC password:
-printf "$PASSWORD\n$PASSWORD\n\n" | vncpasswd;
+printf "$PASSWORD\n$PASSWORD\n\n" | vncpasswd
 
-## Configure VNC Server via configuration file (~/.vnc/xstartup)
+## Configure VNC Server via configuration file ($HOME/.vnc/xstartup)
 # create default xstartup file by starting and killing a vncserver:
-vncserver :1
+  rm $HOME/.vnc/xstartup || true
+  vncserver :1
   vncserver -kill :1
-  # add a line that visual studio code is started, if it is not already present:
-  cat ~/.vnc/xstartup | egrep '^code' || echo "code --verbose; sleep 1; wmctrl -i -r 0x800001 -e 0,0,0,${WIDTH},${HEIGHT}" >> ~/.vnc/xstartup;
+  # replace the (or add a) line to start visual studio code with the latest parameters:
+  cat $HOME/.vnc/xstartup | egrep -v '^code' > $HOME/.vnc/xstartup.new
+
+  cat <<'EOF' >> $HOME/.vnc/xstartup.new
+if test "$(id -u)" = "0"; then
+  # as root:
+  code --user-data-dir /root
+else
+  # as a normal user:
+  code
+fi
+VSCODE_WINDOW_ID=$(xwininfo -tree -root | grep "Visual Studio Code" | head -1 | awk '{print $1}') 
+echo VSCODE_WINDOW_ID=$VSCODE_WINDOW_ID
+EOF
+
+  echo "wmctrl -i -r \${VSCODE_WINDOW_ID} -e 0,0,0,${WIDTH},${HEIGHT}" >> $HOME/.vnc/xstartup.new
+  cp $HOME/.vnc/xstartup.new $HOME/.vnc/xstartup
 
 # Start VNC Server:
 vncserver $VNC_ARGS
 
 # Start noVNC Server:
-/noVNC/utils/launch.sh --vnc localhost:5901;
+/noVNC/utils/launch.sh --vnc localhost:5901
+
+# Resize Visual Studio Code to full screen:
+#VSCODE_WINDOW_ID=$(xwininfo -tree -root | grep "Visual Studio Code" | head -1 | awk "{print \$1}"); echo VSCODE_WINDOW_ID=$VSCODE_WINDOW_ID
+#wmctrl -i -r ${VSCODE_WINDOW_ID} -e 0,0,0,${WIDTH},${HEIGHT}
+
