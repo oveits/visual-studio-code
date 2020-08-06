@@ -16,5 +16,5 @@ mkdir -p $HOME/.vocloud/.m2
 mkdir -p $HOME/.ssh
 
 #cat deploy/intellijDesktopClaim.yaml      | kubectl $CMD -f -
-cat deploy/visualStudioCodeDeployment.yaml | kubectl $CMD -f -
+cat deploy/deploy.yaml | kubectl $CMD -f -
 
