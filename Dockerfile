@@ -1,4 +1,6 @@
 FROM ubuntu:16.04
+
+USER root
 RUN apt-get update; \
     apt-get -y upgrade; \
     apt-get install -y vnc4server git python vim wmctrl curl apt-transport-https libasound2 build-essential wget sudo
@@ -21,12 +23,9 @@ ENV PASSWORD=123456 WIDTH=1920 HEIGHT=1080
 #    make install; \
 #    rm ../node-v10.16.0.tar.gz;
 
-# does not work:
-#RUN curl -sL https://rpm.nodesource.com/setup | bash -
-#    RUN yum install –y nodejs \
-#    RUN node –version
-RUN groupadd usergroup -g 1000 \
-    && useradd -m user -u 1000 -g 1000 -d /home/user
+# Install grout and user 1000, if it does not exist:
+RUN getent group | grep ':1000:' || groupadd usergroup -g 1000
+RUN useradd -m user -u 1000 -g 1000 -d /home/user || true
 # RUN mkdir -p /root/.m2 && chown $MYUSER:$MYGROUP -R /root
 
 RUN curl -s -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | grep -v "sleep 20" | bash \
@@ -51,6 +50,12 @@ WORKDIR /home/user
 
 RUN . "$HOME/.nvm/nvm.sh" \
     && LATEST_LTS=$(nvm ls-remote | grep "Latest LTS" | sed 's/^[^v]*\(v[0-9\.]*\)[^0-9].*$/\1/' | tail -1) \
+    && nvm install $LATEST_LTS \
     && nvm use $LATEST_LTS
+
+# installing angular cli as user does not seem to work?
+#RUN . "$HOME/.nvm/nvm.sh" \
+#    && export NG_CLI_ANALYTICS=ci \
+#    && npm install -g @angular/cli@9.1.7
 
 ENTRYPOINT ["/startup.sh"]
