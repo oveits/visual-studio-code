@@ -55,6 +55,8 @@ spec:
           name: maven-config
         - mountPath: /headless/.ssh
           name: dot-ssh
+        - mountPath: /dev/shm
+          name: dev-shm
 #        command: ["/entrypoint_vnc_startup.sh", "/entrypoint_post_vnc_startup.sh"]
 #        args: ["/bin/bash", "-c", "ln -s /home/centos/.gitconfig /headless/.gitconfig; while true; do echo keepalive; sleep 3600; done"]
       volumes:
@@ -90,5 +92,8 @@ spec:
         hostPath:
           path: /home/centos/.ssh
           type: Directory
+      - name: dev-shm
+        emptyDir:
+          medium: Memory
 #        persistentVolumeClaim:
 #          claimName: visual-studio-code-claim
