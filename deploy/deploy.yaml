@@ -41,7 +41,7 @@ spec:
         volumeMounts:
         - mountPath: /home/centos
           name: home-volume
-        - mountPath: /headless/.vocloud
+        - mountPath: /home/user
           name: vocloud-volume
         - mountPath: /headless/.IdeaIC2019.3
           name: idea-config-volume
