@@ -43,22 +43,22 @@ spec:
           name: home-volume
         - mountPath: /home/user
           name: vocloud-volume
-        - mountPath: /headless/.IdeaIC2019.3
+        - mountPath: /home/user/.IdeaIC2019.3
           name: idea-config-volume
-        - mountPath: /headless/.local
+        - mountPath: /home/user/.local
           name: idea-local-volume
-        - mountPath: /headless/git
+        - mountPath: /home/user/git
           name: git-volume
-        - mountPath: /headless/.java
+        - mountPath: /home/user/.java
           name: java-config
-        - mountPath: /headless/.m2
+        - mountPath: /home/user/.m2
           name: maven-config
-        - mountPath: /headless/.ssh
+        - mountPath: /home/user/.ssh
           name: dot-ssh
         - mountPath: /dev/shm
           name: dev-shm
 #        command: ["/entrypoint_vnc_startup.sh", "/entrypoint_post_vnc_startup.sh"]
-#        args: ["/bin/bash", "-c", "ln -s /home/centos/.gitconfig /headless/.gitconfig; while true; do echo keepalive; sleep 3600; done"]
+#        args: ["/bin/bash", "-c", "ln -s /home/centos/.gitconfig /home/user/.gitconfig; while true; do echo keepalive; sleep 3600; done"]
       volumes:
       - name: home-volume
         hostPath:
